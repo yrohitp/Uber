@@ -293,15 +293,17 @@ Logs out the currently authenticated user by invalidating their token and cleari
     "error": "Invalid token."
   }
   ```
-# Captain Registration Endpoint
+# Captain Routes Documentation
 
-## POST /captains/register
+## Captain Registration Endpoint
 
-### Description
+### POST /captains/register
+
+#### Description
 
 This endpoint is used to register a new captain. It validates the input data, checks if the email is already registered, hashes the password, and creates a new captain in the database. Upon successful registration, it returns the captain details.
 
-### Request Body
+#### Request Body
 
 The request body should be a JSON object with the following fields:
 
@@ -335,8 +337,8 @@ Example:
 }
 ```
 
-### Example Responses
-
+#### Example Responses
+  
 -  `User`(object)
 - `fullname`(object)
   - `firstname`: A string with at least 3 characters
@@ -350,13 +352,13 @@ Example:
   - `vehicaType` (string) vehical Type
   - `plate` (number) vehicle number plate
   - `token` (string) vehical number plate
-
-#### Success
+##### Success
 
 - **Status Code**: `201 Created`
 - **Body**:
   ```json
   {
+    "token": "jwt_token_here",
     "captain": {
       "_id": "captain_id_here",
       "fullname": {
@@ -374,7 +376,7 @@ Example:
   }
   ```
 
-#### Validation Errors
+##### Validation Errors
 
 - **Status Code**: `400 Bad Request`
 - **Body**:
@@ -420,7 +422,7 @@ Example:
   }
   ```
 
-#### Internal Server Error
+##### Internal Server Error
 
 - **Status Code**: `500 Internal Server Error`
 - **Body**:
@@ -429,3 +431,342 @@ Example:
     "error": "Internal Server Error"
   }
   ```
+
+## Captain Login Endpoint
+
+### POST /captains/login
+
+#### Description
+
+This endpoint is used to log in an existing captain. It validates the input data, checks if the email and password match, and returns a JSON Web Token (JWT) and the captain details upon successful authentication.
+
+#### Request Body
+
+The request body should be a JSON object with the following fields:
+
+- `email`: A valid email address (required)
+- `password`: A string with at least 6 characters (required)
+
+Example:
+
+```json
+{
+  "email": "jane.doe@example.com",
+  "password": "password123"
+}
+```
+
+#### Example Responses
+
+
+-  `User`(object)
+- `fullname`(object)
+  - `firstname`: A string with at least 3 characters
+(required)
+  - `lastname`: A string with at least 3 characters 
+(optional)
+- `email`: A valid email address (required)
+- `vehical`:(object)
+  - `color`:(string) vehical color
+  - `capacity (number) vehical capacity
+  - `vehicaType` (string) vehical Type
+  - `plate` (number) vehicle number plate
+  - `token` (string) vehical number plate
+
+##### Success
+
+- **Status Code**: `200 OK`
+- **Body**:
+  ```json
+  {
+    "token": "jwt_token_here",
+    "captain": {
+      "_id": "captain_id_here",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Doe"
+      },
+      "email": "jane.doe@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+    }
+  }
+  ```
+
+##### Validation Errors
+
+- **Status Code**: `400 Bad Request`
+- **Body**:
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Invalid Email",
+        "param": "email",
+        "location": "body"
+      },
+      {
+        "msg": "Password must be at least 6 characters long",
+        "param": "password",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+##### Invalid Credentials
+
+- **Status Code**: `401 Unauthorized`
+- **Body**:
+  ```json
+  {
+    "message": "Invalid email or password"
+  }
+  ```
+
+##### Internal Server Error
+
+- **Status Code**: `500 Internal Server Error`
+- **Body**:
+  ```json
+  {
+    "error": "Internal Server Error"
+  }
+  ```
+
+## Captain Profile Endpoint
+
+### GET /captains/profile
+
+#### Description
+
+Retrieves the profile information of the currently authenticated captain.
+
+#### Headers
+
+- `Authorization`: Bearer token (JWT) required
+
+#### Example Responses
+
+
+-  `User`(object)
+- `fullname`(object)
+  - `firstname`: A string with at least 3 characters
+(required)
+  - `lastname`: A string with at least 3 characters 
+(optional)
+- `email`: A valid email address (required)
+- `vehical`:(object)
+  - `color`:(string) vehical color
+  - `capacity (number) vehical capacity
+  - `vehicaType` (string) vehical Type
+  - `plate` (number) vehicle number plate
+
+##### Success
+
+- **Status Code**: `200 OK`
+- **Body**:
+  ```json
+  {
+    "captain": {
+      "_id": "captain_id_here",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Doe"
+      },
+      "email": "jane.doe@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+    }
+  }
+  ```
+
+##### Unauthorized
+
+- **Status Code**: `401 Unauthorized`
+- **Body**:
+  ```json
+  {
+    "error": "Access denied. No token provided."
+  }
+  ```
+
+##### Invalid Token
+
+- **Status Code**: `400 Bad Request`
+- **Body**:
+  ```json
+  {
+    "error": "Invalid token."
+  }
+  ```
+
+## Captain Logout Endpoint
+
+### GET /captains/logout
+
+#### Description
+
+Logs out the currently authenticated captain by invalidating their token and clearing their cookie.
+
+#### Headers
+
+- `Authorization`: Bearer token (JWT) required
+
+#### Example Responses
+
+##### Success
+
+- **Status Code**: `200 OK`
+- **Body**:
+  ```json
+  {
+    "message": "Logout successfully"
+  }
+  ```
+
+##### Unauthorized
+
+- **Status Code**: `401 Unauthorized`
+- **Body**:
+  ```json
+  {
+    "error": "Access denied. No token provided."
+  }
+  ```
+
+##### Invalid Token
+
+- **Status Code**: `400 Bad Request`
+- **Body**:
+  ```json
+  {
+    "error": "Invalid token."
+  }
+  ```
+
+
+ 
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
