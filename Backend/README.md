@@ -31,6 +31,7 @@ Example:
 
 ### example Responses
 
+-  `User`(object)
 - `fullname`(object)
   - `firstname`: A string with at least 3 characters (required)
   - `lastname`: A string with at least 3 characters (optional)
@@ -101,6 +102,7 @@ Example:
     "error": "Internal Server Error"
   }
   ```
+
 # User Login Endpoint
 
 ## POST /users/login
@@ -127,6 +129,7 @@ Example:
 
 ### Example Responses
 
+-  `User`(object)
 - `fullname`(object)
   - `firstname`: A string with at least 3 characters 
 (required)
@@ -193,5 +196,100 @@ Example:
   ```json
   {
     "error": "Internal Server Error"
+  }
+  ```
+
+# User Profile Endpoint
+
+## GET /users/profile
+
+### Description
+Retrieves the profile information of the currently authenticated user.
+
+### Headers
+- `Authorization`: Bearer token (JWT) required
+
+### Responses
+
+-  `User`(object)
+- `fullname`(object)
+  - `firstname`: A string with at least 3 characters
+(required)
+  - `lastname`: A string with at least 3 characters 
+(optional)
+- `email`: A valid email address (required)
+
+
+#### Success
+- **Status Code**: `200 OK`
+- **Body**:
+  ```json
+  {
+    "user": {
+      "_id": "user_id_here",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "john.doe@example.com"
+    }
+  }
+  ```
+
+#### Unauthorized
+- **Status Code**: `401 Unauthorized`
+- **Body**:
+  ```json
+  {
+    "error": "Access denied. No token provided."
+  }
+  ```
+
+#### Invalid Token
+- **Status Code**: `400 Bad Request`
+- **Body**:
+  ```json
+  {
+    "error": "Invalid token."
+  }
+  ```
+
+# User Logout Endpoint
+
+## POST /users/logout
+
+### Description
+Logs out the currently authenticated user by invalidating their token and clearing their socket ID.
+
+### Headers
+- `Authorization`: Bearer token (JWT) required
+
+### Responses
+
+
+#### Success
+- **Status Code**: `200 OK`
+- **Body**:
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+#### Unauthorized
+- **Status Code**: `401 Unauthorized`
+- **Body**:
+  ```json
+  {
+    "error": "Access denied. No token provided."
+  }
+  ```
+
+#### Invalid Token
+- **Status Code**: `400 Bad Request`
+- **Body**:
+  ```json
+  {
+    "error": "Invalid token."
   }
   ```
